@@ -1,45 +1,62 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const User = require("./models/user-model"); // Adjust path if needed
-require("dotenv").config();
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
-  } catch (error) {
-    console.error("MongoDB connection failed:", error);
-    process.exit(1);
-  }
-};
 
-const seedAdmin = async () => {
-  try {
-    await connectDB();
-
-    const existingAdmin = await User.findOne({ email: "admin@example.com" });
-
-    if (existingAdmin) {
-      console.log("Admin already exists");
-    } else {
-      const hashedPassword = await bcrypt.hash("admin123", 10);
-
-      const adminUser = new User({
-        userName: "Admin",
-        email: "admin@example.com",
-        password: hashedPassword,
-        role: "admin",
-      });
-
-      await adminUser.save();
-      console.log("✅ Admin user seeded successfully");
-    }
-
-    mongoose.connection.close();
-  } catch (error) {
-    console.error("❌ Seeding failed:", error);
-    mongoose.connection.close();
-  }
-};
-
-seedAdmin();
+    const express = require("express");
+    const mongoose = require("mongoose");
+    const cookieParser = require("cookie-parser");
+    const cors = require("cors");
+    const authRouter = require("./routes/auth/auth-routes");
+    const adminProductsRouter = require("./routes/admin/products-routes");
+    const adminOrderRouter = require("./routes/admin/order-routes");
+    
+    const shopProductsRouter = require("./routes/shop/products-routes");
+    const shopCartRouter = require("./routes/shop/cart-routes");
+    const shopAddressRouter = require("./routes/shop/address-routes");
+    const shopOrderRouter = require("./routes/shop/order-routes");
+    const shopSearchRouter = require("./routes/shop/search-routes");
+    const shopReviewRouter = require("./routes/shop/review-routes");
+    
+    const commonFeatureRouter = require("./routes/common/feature-routes");
+    
+    //create a database connection -> u can also
+    //create a separate file for this and then import/use that file here
+    
+    mongoose
+      .connect("mongodb+srv://SanampreetSingh:Sanam***123@cluster0.n1fqx.mongodb.net/")
+      .then(() => console.log("MongoDB connected"))
+      .catch((error) => console.log(error));
+    
+    const app = express();
+    const PORT = process.env.PORT || 5000;
+    
+    app.use(
+      cors({
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST", "DELETE", "PUT"],
+        allowedHeaders: [
+          "Content-Type",
+          "Authorization",
+          "Cache-Control",
+          "Expires",
+          "Pragma",
+        ],
+        credentials: true,
+      })
+    );
+    
+    app.use(cookieParser());
+    app.use(express.json());
+    app.use("/api/admin/products", adminProductsRouter);
+    app.use(express.urlencoded({ extended: true }));
+    app.use("/api/auth", authRouter);
+    app.use("/api/admin/orders", adminOrderRouter);
+    
+    app.use("/api/shop/products", shopProductsRouter);
+    app.use("/api/shop/cart", shopCartRouter);
+    app.use("/api/shop/address", shopAddressRouter);
+    app.use("/api/shop/order", shopOrderRouter);
+    app.use("/api/shop/search", shopSearchRouter);
+    app.use("/api/shop/review", shopReviewRouter);
+    
+    app.use("/api/common/feature", commonFeatureRouter);
+    
+    app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));

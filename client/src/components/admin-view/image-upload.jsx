@@ -53,7 +53,9 @@ function ProductImageUpload({
       "http://localhost:5000/api/admin/products/upload-image",
       data
     );
-    console.log(response, "response");
+   
+console.log(response.data, "response.data"); // ✅ ADD THIS
+console.log(response, "response");
 
     if (response?.data?.success) {
       setUploadedImageUrl(response.data.result.url);
@@ -89,6 +91,7 @@ function ProductImageUpload({
           <Label
             htmlFor="image-upload"
             className={`${
+            
               isEditMode ? "cursor-not-allowed" : ""
             } flex flex-col items-center justify-center h-32 cursor-pointer`}
           >

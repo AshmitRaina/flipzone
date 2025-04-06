@@ -3,13 +3,22 @@ const Product = require("../../models/Product");
 
 const handleImageUpload = async (req, res) => {
   try {
+    console.log("req.file:", req.file); // 👈 Add this
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file received",
+      });
+    }
     const b64 = Buffer.from(req.file.buffer).toString("base64");
     const url = "data:" + req.file.mimetype + ";base64," + b64;
     const result = await imageUploadUtil(url);
-
-    res.json({
+    res.status(200).json({
       success: true,
-      result,
+      result: {
+        url: result.secure_url,
+        public_id: result.public_id,
+      },
     });
   } catch (error) {
     console.log(error);
