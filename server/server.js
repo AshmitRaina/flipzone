@@ -21,7 +21,7 @@
     //create a separate file for this and then import/use that file here
     
     mongoose
-      .connect("mongodb+srv://SanampreetSingh:Sanam***123@cluster0.n1fqx.mongodb.net/")
+      .connect("mongodb+srv://ashmitraina82_db_user:test123@cluster0.vq1fkdw.mongodb.net/")
       .then(() => console.log("MongoDB connected"))
       .catch((error) => console.log(error));
     

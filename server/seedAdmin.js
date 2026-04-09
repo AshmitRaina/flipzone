@@ -7,7 +7,7 @@ const User = require("./models/User"); // adjust path if needed
 
 const seedDatabase = async () => {
   try {
-    await mongoose.connect("mongodb+srv://SanampreetSingh:Sanam***123@cluster0.n1fqx.mongodb.net/", {
+    await mongoose.connect("mongodb+srv://ashmitraina82_db_user:KCHbBDh4FoqS6jTi@cluster0.vq1fkdw.mongodb.net/", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
